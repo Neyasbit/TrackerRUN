@@ -1,0 +1,96 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.example.tracker"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.core:core-ktx:$ktxVersion"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$testExtJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+
+    // Navigation Component
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // Dagger Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion"
+    kapt "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
+
+    // Room
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$roomVersion"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+
+    // Coroutine Lifecycle Scopes
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$coroutineLSVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$coroutineLSVersion"
+
+    // Navigation Components
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:2.$navigationVersion"
+
+    // Glide
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+
+    // Google Maps Location Services
+    implementation "com.google.android.gms:play-services-location:$mapsVersion"
+    implementation "com.google.android.gms:play-services-maps:$mapsServiceVersion"
+
+    // Easy Permissions
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+}

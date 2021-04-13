@@ -11,6 +11,7 @@ import com.example.tracker.databinding.FragmentSetupBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 class SetupFragment : Fragment() {
+
     private var _binding : FragmentSetupBinding? = null
     private val binding get() = _binding!!
 
@@ -24,6 +25,7 @@ class SetupFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.apply {
             tvContinue.setOnClickListener {
                 findNavController().navigate(R.id.action_setupFragment_to_runFragment)

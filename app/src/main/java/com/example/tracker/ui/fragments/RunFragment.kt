@@ -17,6 +17,7 @@ import com.example.tracker.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber
 
 @AndroidEntryPoint
 class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks{
@@ -43,6 +44,7 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks{
     }
 
     private fun requestPermissions() {
+        Timber.d("Permission RUNFRAGMENT ${TrackingUtility.hasLocationPermission(requireContext())}")
         if (TrackingUtility.hasLocationPermission(requireContext())) {
             return
         }

@@ -1,5 +1,6 @@
 package com.example.tracker.utls
 
+import android.graphics.Color
 import android.provider.BaseColumns
 
 object Constants {
@@ -11,8 +12,15 @@ object Constants {
     const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
     const val ACTION_SHOW_TRACKING_FRAGMENT = "ACTION_SHOW_TRACKING_FRAGMENT"
 
+    const val UPDATE_LOCATION_INTERVAL = 5000L
+    const val FASTEST_LOCATION_INTERVAL = 2000L
+
     const val NOTIFICATION_CHANNEL_ID = "tracking_channel"
     const val NOTIFICATION_CHANNEL_NAME = "Tracking"
     const val NOTIFICATION_ID = 1
+
+    const val POLYLINE_COLOR = Color.RED
+    const val POLYLINE_WIDTH = 8f
+    const val MAP_ZOOM = 15f
 
 }

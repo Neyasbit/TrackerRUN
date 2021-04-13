@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/setupFragment">
 
+    <action android:id="@+id/action_global_trackingFragment"
+        app:destination="@+id/trackingFragment"/>
+    
     <fragment
         android:id="@+id/setupFragment"
         android:name="com.example.tracker.ui.fragments.SetupFragment"

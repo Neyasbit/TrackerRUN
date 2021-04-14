@@ -16,11 +16,13 @@ import com.example.tracker.utls.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.tracker.utls.Constants.MAP_ZOOM
 import com.example.tracker.utls.Constants.POLYLINE_COLOR
 import com.example.tracker.utls.Constants.POLYLINE_WIDTH
+import com.example.tracker.utls.TrackingUtility
 import com.example.tracker.viewmodels.StatisticsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class TrackingFragment : Fragment() {
@@ -34,6 +36,8 @@ class TrackingFragment : Fragment() {
 
     private var isTracking = false
     private var pathPoints = mutableListOf<Polyline>()
+
+    private var curTimeInMillis = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,6 +70,12 @@ class TrackingFragment : Fragment() {
             pathPoints = it
             addLatestPolyline()
             moveCameraToUser()
+        }
+        TrackingService.timeRunInMillis.observe(viewLifecycleOwner) {
+            curTimeInMillis = it
+            Timber.d("$curTimeInMillis")
+            val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
+            binding.tvTimer.text = formattedTime
         }
     }
 

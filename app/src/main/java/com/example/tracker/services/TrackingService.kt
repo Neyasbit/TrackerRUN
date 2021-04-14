@@ -50,7 +50,8 @@ typealias Polylines = MutableList<Polyline>
 @AndroidEntryPoint
 class TrackingService : LifecycleService() {
 
-    var isFirstStart = true
+    private var isFirstStart = true
+    var serviceKilled = false
 
     @Inject
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -98,9 +99,18 @@ class TrackingService : LifecycleService() {
                     startTimer()
             }
             ACTION_PAUSE_SERVICE -> pauseService()
-            ACTION_STOP_SERVICE -> Timber.d("Service stop")
+            ACTION_STOP_SERVICE -> killService()
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun killService() {
+        serviceKilled = true
+        isFirstStart = true
+        pauseService()
+        postInitialValues()
+        stopForeground(true)
+        stopSelf()
     }
 
     private var isTimerEnabled = false
@@ -195,11 +205,15 @@ class TrackingService : LifecycleService() {
 
         startForeground(NOTIFICATION_ID, baseNotificationBuilder.build())
 
+
         timeRunInSeconds.observe(this) {
-            val notification = curNotificationBuilder
-                .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000L))
-            notificationManager.notify(NOTIFICATION_ID, notification.build())
+            if (!serviceKilled) {
+                val notification = curNotificationBuilder
+                    .setContentText(TrackingUtility.getFormattedStopWatchTime(it * 1000L))
+                notificationManager.notify(NOTIFICATION_ID, notification.build())
+            }
         }
+
     }
 
     private fun updateNotificationTrackingState(isTracking: Boolean) {
@@ -222,9 +236,11 @@ class TrackingService : LifecycleService() {
             isAccessible = true
             set(curNotificationBuilder, ArrayList<NotificationCompat.Action>())
         }
-        curNotificationBuilder = baseNotificationBuilder
-            .addAction(R.drawable.ic_pause_black_24dp, notificationActionText, pendingIntent)
-        notificationManager.notify(NOTIFICATION_ID, curNotificationBuilder.build())
+        if (!serviceKilled) {
+            curNotificationBuilder = baseNotificationBuilder
+                .addAction(R.drawable.ic_pause_black_24dp, notificationActionText, pendingIntent)
+            notificationManager.notify(NOTIFICATION_ID, curNotificationBuilder.build())
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

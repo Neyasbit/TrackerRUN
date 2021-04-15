@@ -1,8 +1,12 @@
+
 package com.example.tracker.utls
 
 import android.Manifest
 import android.content.Context
+import android.location.Location
 import android.os.Build
+import com.example.tracker.services.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -43,5 +47,23 @@ object TrackingUtility {
                 "${if(seconds < 10) "0" else ""}$seconds:" +
                 "${if(milliseconds < 10) "0" else ""}$milliseconds"
 
+    }
+    fun calculatePolylineLength(polyline: Polyline) : Float{
+        var distance = 0f
+        for (i in 0..polyline.size - 2) {
+            val posOne = polyline[i]
+            val posTwo = polyline[i+1]
+
+            val result = FloatArray(1)
+            Location.distanceBetween(
+                posOne.latitude,
+                posOne.longitude,
+                posTwo.latitude,
+                posTwo.longitude,
+                result
+            )
+            distance+=result[0]
+        }
+        return distance
     }
 }

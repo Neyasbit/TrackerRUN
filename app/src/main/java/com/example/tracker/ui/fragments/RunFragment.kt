@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.tracker.R
+import com.example.tracker.adapters.RunAdapter
 import com.example.tracker.databinding.FragmentRunBinding
 import com.example.tracker.utls.Constants.REQUEST_CODE_LOCATION_PERMISSION
+import com.example.tracker.utls.SortType
 import com.example.tracker.utls.TrackingUtility
 import com.example.tracker.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,9 +24,13 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks{
+
     private val mainViewModel: MainViewModel by viewModels()
+
     private var _binding : FragmentRunBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var runAdapter: RunAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,10 +48,23 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks{
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_runFragment_to_trackingFragment)
         }
+
+        binding.rvRuns.apply {
+            runAdapter = RunAdapter()
+            adapter = runAdapter
+        }
+
+        binding.spFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(adapter: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                mainViewModel.runsSortedByColumnName(SortType.findSortTypeByPosition(position)).observe(viewLifecycleOwner) {
+                    runAdapter.submitList(it)
+                }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
+        }
     }
 
     private fun requestPermissions() {
-        Timber.d("Permission RUNFRAGMENT ${TrackingUtility.hasLocationPermission(requireContext())}")
         if (TrackingUtility.hasLocationPermission(requireContext())) {
             return
         }

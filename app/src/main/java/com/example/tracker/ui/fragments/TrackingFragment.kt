@@ -128,7 +128,6 @@ class TrackingFragment : Fragment() {
         }
         TrackingService.timeRunInMillis.observe(viewLifecycleOwner) {
             curTimeInMillis = it
-            Timber.d("$curTimeInMillis")
             val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
             binding.tvTimer.text = formattedTime
         }

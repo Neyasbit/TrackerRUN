@@ -12,9 +12,11 @@ class MainRepository @Inject constructor(
     val totalDistance = runDAO.getTotalDistance()
     val totalAverageSpeed = runDAO.getTotalAverageSpeed()
 
+    val runsSortedByDate = runDAO.filterBy("timestamp")
+
     suspend fun insertRun(model: Run) = runDAO.insertRun(model)
 
     suspend fun deleteRun(model: Run) = runDAO.deleteRun(model)
 
-    fun getAllRunsSortedByDate(columnsName: String) = runDAO.filterBy(columnsName)
+    fun runsSortedByColumnName(columnName: String) = runDAO.filterBy(columnName)
 }

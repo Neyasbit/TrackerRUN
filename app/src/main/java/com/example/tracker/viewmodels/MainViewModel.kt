@@ -13,9 +13,13 @@ class MainViewModel @Inject constructor(
     private val repository: MainRepository
 ) : ViewModel()  {
 
+    val runsSortedByDate = repository.runsSortedByDate
+
     fun insertRun(run: Run) {
         viewModelScope.launch {
             repository.insertRun(run)
         }
     }
+
+    fun runsSortedByColumnName(columnName: String) = repository.runsSortedByColumnName(columnName)
 }

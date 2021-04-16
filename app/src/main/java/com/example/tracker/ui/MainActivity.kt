@@ -28,7 +28,10 @@ class MainActivity : AppCompatActivity() {
             navController = (supportFragmentManager
                 .findFragmentById(navHosFragment.id) as NavHostFragment)
                 .navController
-            bottomNavigationView.setupWithNavController(navController)
+            bottomNavigationView.apply {
+                setupWithNavController(navController)
+                setOnNavigationItemReselectedListener { /*NO-OP*/ }
+            }
             setSupportActionBar(toolbar)
         }
         navigateToTrackingFragmentIfNeeded(intent)

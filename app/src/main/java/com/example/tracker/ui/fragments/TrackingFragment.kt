@@ -19,23 +19,21 @@ import com.example.tracker.utls.Constants.POLYLINE_COLOR
 import com.example.tracker.utls.Constants.POLYLINE_WIDTH
 import com.example.tracker.utls.TrackingUtility
 import com.example.tracker.viewmodels.MainViewModel
-import com.example.tracker.viewmodels.StatisticsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
 
+const val CANCEL_TRACKING_TAG = "cancelTag"
+
 @AndroidEntryPoint
 class TrackingFragment : Fragment() {
 
-    private val statisticsViewModel: StatisticsViewModel by viewModels()
     private val viewModel: MainViewModel by viewModels()
 
     private var _binding: FragmentTrackingBinding? = null
@@ -59,13 +57,14 @@ class TrackingFragment : Fragment() {
     ): View? {
         _binding = FragmentTrackingBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
+        binding.mapView.onCreate(savedInstanceState)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.mapView.onCreate(savedInstanceState)
+
         binding.mapView.getMapAsync {
             map = it
             addAllPolylines()
@@ -79,6 +78,15 @@ class TrackingFragment : Fragment() {
             endRunAndSaveToDb()
         }
         subscribeToObservers()
+
+        if (savedInstanceState != null) {
+            val cancelTrackingFragment =
+                parentFragmentManager.findFragmentByTag(CANCEL_TRACKING_TAG)
+                        as CancelTrackingFragment?
+            cancelTrackingFragment?.yesListener {
+                stopRun()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -102,16 +110,11 @@ class TrackingFragment : Fragment() {
     }
 
     private fun showCancelTrackingDialog() {
-        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Cancel the Run?")
-            .setMessage("Are you sure to cancel the current run and delete all data?")
-            .setIcon(R.drawable.ic_delete)
-            .setPositiveButton("Yes") { _, _ ->
+        CancelTrackingFragment().apply {
+            yesListener {
                 stopRun()
             }
-            .setNegativeButton("No") { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }.create().show()
+        }.show(parentFragmentManager, CANCEL_TRACKING_TAG)
     }
 
     private fun stopRun() {
@@ -144,12 +147,12 @@ class TrackingFragment : Fragment() {
 
     private fun updateTracking(isTracking: Boolean) {
         this.isTracking = isTracking
-        if (!isTracking) {
+        if (!isTracking && curTimeInMillis > 0L) {
             binding.apply {
                 btnToggleRun.text = "Start"
                 btnFinishRun.visibility = View.VISIBLE
             }
-        } else {
+        } else if (isTracking) {
             binding.apply {
                 btnToggleRun.text = "Stop"
                 menu?.getItem(0)?.isVisible = true

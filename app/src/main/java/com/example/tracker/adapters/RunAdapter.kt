@@ -25,6 +25,7 @@ class RunAdapter : ListAdapter<Run, RunAdapter.RunViewHolder>(COMPARATOR){
         }
     }
     class RunViewHolder(private val binding: ItemRunBinding) : RecyclerView.ViewHolder(binding.root) {
+
         companion object {
             fun create(parent: ViewGroup) : RunViewHolder {
                 val binding = ItemRunBinding.inflate(LayoutInflater.from(parent.context), parent, false)
